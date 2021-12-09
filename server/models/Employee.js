@@ -15,7 +15,7 @@ const EmployeeSchema = new mongoose.Schema(
         country: { type: String, required: true },
       },
     ],
-    contactNumbers: { type: Array, required: true, unique: true },
+    contactNumbers: [{ phone: { type: String, required: true, unique: true } }],
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     salary: { type: Number, required: true },
