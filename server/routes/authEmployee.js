@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
         .json("User already exist with this contact number!");
     }
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 
   const newEmployee = new Employee({
