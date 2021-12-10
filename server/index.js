@@ -7,7 +7,7 @@ const customerRoute = require("./routes/customer");
 const employeeRoute = require("./routes/employee");
 const productRoute = require("./routes/product");
 
-const app = express;
+const app = express();
 dotenv.config();
 
 mongoose
@@ -25,6 +25,9 @@ app.use("/api/authEmployees", authEmployeeRoute);
 app.use("/api/customers", customerRoute);
 app.use("/api/employees", employeeRoute);
 app.use("/api/products", productRoute);
+app.get("/", (req, res) => {
+  res.status(200).send("<h1>Hello Yaar! Under Construction!!!</h1>");
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}...`);
