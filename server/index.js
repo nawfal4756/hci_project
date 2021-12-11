@@ -8,6 +8,7 @@ const employeeRoute = require("./routes/employee");
 const productRoute = require("./routes/product");
 const cartRoute = require("./routes/cart");
 const expenseRoute = require("./routes/expense");
+const feedRoute = require("./routes/feed");
 
 const app = express();
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/employees", employeeRoute);
 app.use("/api/products", productRoute);
 app.use("/api/carts", cartRoute);
 app.use("/api/expenses", expenseRoute);
+app.use("/api/feeds", feedRoute);
 app.get("/", (req, res) => {
   res.status(200).send("<h1>Hello Yaar! Under Construction!!!</h1>");
 });

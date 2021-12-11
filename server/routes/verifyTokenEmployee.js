@@ -9,6 +9,11 @@ const verifyToken = (req, res, next) => {
         if (err) {
           res.status(403).json("Token is not valid!");
         }
+        if (employee.activeStatus) {
+          return res
+            .status(401)
+            .json("Your account is not actived! Kindly contact administartor!");
+        }
         req.employee = employee;
         next();
       });
@@ -92,6 +97,20 @@ const verifyTokenAndExpenseAccess = (req, res, next) => {
   });
 };
 
+const verifyTokenAndFeedAccess = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (
+      req.employee.isAdmin ||
+      req.employee.expenseAccess ||
+      req.employee.cowAccess
+    ) {
+      next();
+    } else {
+      res.status(403).json("You are not alowed to do that!");
+    }
+  });
+};
+
 module.exports = {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -101,4 +120,5 @@ module.exports = {
   verifyTokenAndOrderAccess,
   verifyTokenAndProductAccess,
   verifyTokenAndExpenseAccess,
+  verifyTokenAndFeedAccess,
 };
