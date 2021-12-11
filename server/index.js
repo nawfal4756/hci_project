@@ -6,6 +6,8 @@ const authEmployeeRoute = require("./routes/authEmployee");
 const customerRoute = require("./routes/customer");
 const employeeRoute = require("./routes/employee");
 const productRoute = require("./routes/product");
+const cartRoute = require("./routes/cart");
+const expenseRoute = require("./routes/expense");
 
 const app = express();
 dotenv.config();
@@ -25,6 +27,8 @@ app.use("/api/authEmployees", authEmployeeRoute);
 app.use("/api/customers", customerRoute);
 app.use("/api/employees", employeeRoute);
 app.use("/api/products", productRoute);
+app.use("/api/carts", cartRoute);
+app.use("/api/expenses", expenseRoute);
 app.get("/", (req, res) => {
   res.status(200).send("<h1>Hello Yaar! Under Construction!!!</h1>");
 });

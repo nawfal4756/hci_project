@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const DateOnly = require("mongoose-dateonly")(mongoose);
 
 const EmployeeSchema = new mongoose.Schema(
   {
     gender: { type: String, required: true },
-    dateOfBirth: { type: Date, required: true },
+    dateOfBirth: { type: DateOnly, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     addresses: [

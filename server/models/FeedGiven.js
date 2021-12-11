@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
-const FeedSchema = mongoose.Schema(
+const FeedGivenSchema = mongoose.Schema(
   {
     cowId: { type: String, require: true },
+    feedId: { type: String, require: true },
     quantity: { type: Number, require: true },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Feed", FeedSchema);
+module.exports = mongoose.model("FeedGiven", FeedGivenSchema);

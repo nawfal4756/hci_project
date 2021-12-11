@@ -24,7 +24,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyTokenAndAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.customer.id == req.params.id) {
+    if (req.customer.id == req.params.id || req.customer.active) {
       next();
     } else {
       res.status(403).json("You are not alowed to do that!");

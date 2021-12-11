@@ -76,6 +76,7 @@ router.post("/login", async (req, res) => {
     const accessToken = jwt.sign(
       {
         id: customer._id,
+        active: customer.active,
       },
       process.env.JWT_SEC,
       { expiresIn: "3d" }
