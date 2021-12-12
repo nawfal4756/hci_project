@@ -3,6 +3,7 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const { verifyTokenAndOrderAccess } = require("./verifyTokenEmployee");
 const { verifyTokenAndAuthorization } = require("./verifyTokenCustomer");
+const orderid = require("order-id")("key");
 
 // Create Employee
 router.post("/create/employee", verifyTokenAndOrderAccess, async (req, res) => {
@@ -28,6 +29,7 @@ router.post("/create/employee", verifyTokenAndOrderAccess, async (req, res) => {
     })
   );
 
+  newOrder.orderNo = orderid.generate(Date());
   newOrder.subTotal = subTotal.toFixed(2);
   newOrder.tax = (subTotal * 0.13).toFixed(2);
   newOrder.total = (subTotal + newOrder.tax).toFixed(2);
@@ -68,6 +70,7 @@ router.post(
       })
     );
 
+    newOrder.orderNo = orderid.generate(Date());
     newOrder.subTotal = subTotal.toFixed(2);
     newOrder.tax = (subTotal * 0.13).toFixed(2);
     newOrder.total = (subTotal + newOrder.tax).toFixed(2);
@@ -137,9 +140,20 @@ router.delete(
 // Get All Orders
 router.get("/", verifyTokenAndOrderAccess, async (req, res) => {
   try {
-    const orders = await Order.find()
-      .populate("products.productId", "name")
-      .populate("customerId", "name contactNumbers");
+    const orders = await Promise.all(
+      (
+        await Order.find()
+          .populate("products.productId", "name")
+          .populate("customerId", "name contactNumbers")
+      ).map((order) => {
+        const total =
+          new Date().getTime() - new Date(order.createdAt).getTime();
+        const minutes = Math.floor(total / 1000) / 60;
+        if (minutes > 5) {
+          return order;
+        }
+      })
+    );
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json(err);
@@ -195,5 +209,12 @@ router.put("/:orderId", verifyTokenAndOrderAccess, async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+// Get All Orders of Customer
+router.get(
+  "/customer/:customerId",
+  verifyTokenAndOrderAccess,
+  (req, res) => {}
+);
 
 module.exports = router;
