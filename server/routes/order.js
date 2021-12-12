@@ -120,7 +120,7 @@ router.delete(
         return res.status(404).json("No order exist with this ID!");
       }
 
-      if (order.status !== "Pending") {
+      if (order.status !== "Pending" || order.status !== "Paid") {
         return res
           .status(403)
           .json("Order cannot be deleted as it is now processed!");
