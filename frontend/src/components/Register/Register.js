@@ -5,8 +5,6 @@ import {
   TextField,
   Select,
   InputLabel,
-  MenuItem,
-  FormControl,
   Button,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
@@ -36,7 +34,6 @@ export default function Register() {
   };
 
   const handleDOBChange = (date) => {
-    console.log(date);
     setDob(date);
   };
 
@@ -85,6 +82,14 @@ export default function Register() {
                     <TextField
                       id="street"
                       label="Street"
+                      variant="outlined"
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs>
+                    <TextField
+                      id="area"
+                      label="Area"
                       variant="outlined"
                       required
                     />
@@ -156,6 +161,7 @@ export default function Register() {
                         format="MM/dd/yyyy"
                         variant="outlined"
                         value={dob}
+                        disableFuture
                         onChange={handleDOBChange}
                       />
                     </MuiPickersUtilsProvider>
