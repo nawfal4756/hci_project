@@ -6,6 +6,7 @@ import {
   Select,
   InputLabel,
   Button,
+  FormHelperText,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import {
@@ -16,25 +17,68 @@ import React, { useState } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { Link } from "react-router-dom";
 import { useStyles } from "./Register.styles";
+import * as yup from "yup";
+import YupPassword from "yup-password";
+import { useFormik } from "formik";
+YupPassword(yup);
+
+const validationSchema = yup.object({
+  name: yup.string("Enter your full name").required("Full Name is rqeuired"),
+  email: yup
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+  street: yup
+    .string("Enter your street address")
+    .required("Street Address is required"),
+  area: yup.string("Enter your area").required("Area is required"),
+  city: yup.string("Enter your city").required("City is required"),
+  state: yup.string("Enter your state").required("State is required"),
+  country: yup.string("Enter your country").required("Country is required"),
+  gender: yup.string("Select Your Gender").required("Gender is required"),
+  dob: yup.date().required("Date of Birth is required"),
+  username: yup.string("Select Your username").required("Username is required"),
+  password: yup
+    .string("Enter your password")
+    .min(8, "Password should be of minimum 8 characters")
+    .minUppercase(1, "Password should contain at least one upper case letter")
+    .minSymbols(1, "Password should contain at least one special character")
+    .required("Password is required"),
+  cusType: yup
+    .string("Select Customer Type")
+    .required("Customer Type is required"),
+});
 
 export default function Register() {
   const classes = useStyles();
   const options = ["Karachi", "Faisalabad", "Badin", "Lahore", "Hyderabad"];
   const states = ["Sindh", "Punjab", "Khyber Pakhtunkhwa", "Balochistan"];
-  const [gender, setGender] = useState("default");
   const [dob, setDob] = useState(new Date());
-  const [customerType, setCustomerType] = useState("default");
 
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
-  };
-
-  const handleCustomerType = (event) => {
-    setCustomerType(event.target.value);
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      street: "",
+      area: "",
+      city: "",
+      state: "",
+      country: "Pakistan",
+      gender: "default",
+      dob: new Date(),
+      username: "",
+      password: "",
+      cusType: "default",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
 
   const handleDOBChange = (date) => {
     setDob(date);
+    formik.setFieldValue("dob", dob);
   };
 
   return (
@@ -54,7 +98,7 @@ export default function Register() {
         <Grid item xs>
           <Paper elevation={5} variant="outlined" className={classes.paper}>
             <div className={classes.div}>
-              <form>
+              <form onSubmit={formik.handleSubmit}>
                 <Grid
                   container
                   spacing={2}
@@ -66,7 +110,10 @@ export default function Register() {
                       id="name"
                       label="Full Name"
                       variant="outlined"
-                      required
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      error={formik.touched.name && Boolean(formik.errors.name)}
+                      helperText={formik.touched.name && formik.errors.name}
                     />
                   </Grid>
                   <Grid item xs>
@@ -75,7 +122,12 @@ export default function Register() {
                       label="Email"
                       type="email"
                       variant="outlined"
-                      required
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.email && Boolean(formik.errors.email)
+                      }
+                      helperText={formik.touched.email && formik.errors.email}
                     />
                   </Grid>
                   <Grid item xs>
@@ -83,7 +135,12 @@ export default function Register() {
                       id="street"
                       label="Street"
                       variant="outlined"
-                      required
+                      value={formik.values.street}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.street && Boolean(formik.errors.street)
+                      }
+                      helperText={formik.touched.street && formik.errors.street}
                     />
                   </Grid>
                   <Grid item xs>
@@ -91,20 +148,27 @@ export default function Register() {
                       id="area"
                       label="Area"
                       variant="outlined"
-                      required
+                      value={formik.values.area}
+                      onChange={formik.handleChange}
+                      error={formik.touched.area && Boolean(formik.errors.area)}
+                      helperText={formik.touched.area && formik.errors.area}
                     />
                   </Grid>
                   <Grid item xs>
                     <Autocomplete
                       id="city"
                       options={options}
-                      getOptionLabel={(option) => option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           label="City"
                           variant="outlined"
-                          required
+                          value={formik.values.city}
+                          onChange={formik.handleChange}
+                          error={
+                            formik.touched.city && Boolean(formik.errors.city)
+                          }
+                          helperText={formik.touched.city && formik.errors.city}
                         />
                       )}
                     />
@@ -113,13 +177,19 @@ export default function Register() {
                     <Autocomplete
                       id="state"
                       options={states}
-                      getOptionLabel={(option) => option}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           label="State"
                           variant="outlined"
-                          required
+                          value={formik.values.state}
+                          onChange={formik.handleChange}
+                          error={
+                            formik.touched.state && Boolean(formik.errors.state)
+                          }
+                          helperText={
+                            formik.touched.state && formik.errors.state
+                          }
                         />
                       )}
                     />
@@ -128,22 +198,27 @@ export default function Register() {
                     <TextField
                       id="country"
                       label="Country"
-                      defaultValue="Pakistan"
                       variant="outlined"
                       InputProps={{ readOnly: true }}
-                      required
+                      value={formik.values.country}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.country && Boolean(formik.errors.country)
+                      }
+                      helperText={
+                        formik.touched.country && formik.errors.country
+                      }
                     />
                   </Grid>
                   <Grid item xs>
                     <InputLabel htmlFor="gender">Gender</InputLabel>
                     <Select
                       native
-                      onChange={handleGenderChange}
-                      value={gender}
-                      required
                       variant="outlined"
                       labelId="gender"
-                      // inputProps={{ id: "gender" }}
+                      id="gender"
+                      value={formik.values.gender}
+                      onChange={formik.handleChange}
                     >
                       <option value="default" disabled>
                         Select
@@ -152,6 +227,11 @@ export default function Register() {
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                     </Select>
+                    {formik.touched.gender && Boolean(formik.errors.gender) ? (
+                      <FormHelperText>
+                        {formik.touched.gender && formik.errors.gender}
+                      </FormHelperText>
+                    ) : null}
                   </Grid>
                   <Grid item xs>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -160,9 +240,11 @@ export default function Register() {
                         label="Date of Birth"
                         format="MM/dd/yyyy"
                         variant="outlined"
-                        value={dob}
-                        disableFuture
+                        value={formik.values.dob}
                         onChange={handleDOBChange}
+                        error={formik.touched.dob && Boolean(formik.errors.dob)}
+                        helperText={formik.touched.dob && formik.errors.dob}
+                        disableFuture
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
@@ -171,7 +253,15 @@ export default function Register() {
                       id="username"
                       label="Username"
                       variant="outlined"
-                      required
+                      value={formik.values.username}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.username &&
+                        Boolean(formik.errors.username)
+                      }
+                      helperText={
+                        formik.touched.username && formik.errors.username
+                      }
                     />
                   </Grid>
                   <Grid item xs>
@@ -180,18 +270,26 @@ export default function Register() {
                       label="Password"
                       type="password"
                       variant="outlined"
-                      required
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.password &&
+                        Boolean(formik.errors.password)
+                      }
+                      helperText={
+                        formik.touched.password && formik.errors.password
+                      }
                     />
                   </Grid>
                   <Grid item xs>
                     <InputLabel htmlFor="cusType">Customer Type</InputLabel>
                     <Select
                       native
-                      onChange={handleCustomerType}
-                      value={customerType}
                       required
                       variant="outlined"
                       inputProps={{ id: "cusType" }}
+                      value={formik.values.cusType}
+                      onChange={formik.handleChange}
                     >
                       <option value="default" disabled>
                         Select
@@ -199,10 +297,25 @@ export default function Register() {
                       <option value="retail">Retail</option>
                       <option value="business">Business</option>
                     </Select>
+                    {formik.touched.cusType &&
+                    Boolean(formik.errors.cusType) ? (
+                      <FormHelperText>
+                        {formik.touched.cusType && formik.errors.cusType}
+                      </FormHelperText>
+                    ) : null}
                   </Grid>
-                  <Grid item xs>
-                    <Button variant="outlined" color="inherit">
+                  <Grid item xs={5}>
+                    <Button variant="outlined" color="inherit" type="submit">
                       Register
+                    </Button>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <Button
+                      variant="outlined"
+                      color="inherit"
+                      onClick={formik.handleReset}
+                    >
+                      Reset
                     </Button>
                   </Grid>
                   <Grid item xs>
