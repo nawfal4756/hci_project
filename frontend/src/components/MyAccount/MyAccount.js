@@ -75,7 +75,7 @@ export default function MyAccount() {
                 >
                   <Button
                     onClick={() => {
-                      setUpdated(!updated);
+                      setUpdated(true);
                     }}
                     variant="outlined"
                     className={classes.button}
@@ -170,7 +170,13 @@ export default function MyAccount() {
                     justifyContent="flex-end"
                     alignItems="flex-end"
                   >
-                    <Button variant="outlined" className={classes.cancelButton}>
+                    <Button
+                      variant="outlined"
+                      className={classes.cancelButton}
+                      onClick={() => {
+                        setUpdated(false);
+                      }}
+                    >
                       Cancel
                     </Button>
                     <Button variant="outlined" className={classes.updateButton}>

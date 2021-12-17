@@ -8,6 +8,8 @@ import Store from "./components/Store/Store";
 import StoreOutlet from "./components/Store/StoreOutlet";
 import StoreProduct from "./components/Store/StoreProduct";
 import MyAccount from "./components/MyAccount/MyAccount";
+import PasswordChange from "./components/PasswordChange/PasswordChange";
+import Orders from "./components/Orders/Orders";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="myaccount" element={<MyAccount />} />
+          <Route path="password" element={<PasswordChange />} />
+          <Route path="orders" element={<Orders />} />
         </Routes>
       </Router>
     </div>
