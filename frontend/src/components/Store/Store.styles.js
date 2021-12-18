@@ -19,4 +19,12 @@ export const useStyles = makeStyles({
   select: {
     paddingBottom: "10px",
   },
+  textInStock: {
+    color: "green",
+    textAlign: "center",
+  },
+  textOutStock: {
+    color: "red",
+    textAlign: "center",
+  },
 });

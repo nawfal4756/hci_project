@@ -10,13 +10,28 @@ import {
   Tooltip,
   Menu,
   MenuItem,
+  Badge,
+  withStyles,
 } from "@material-ui/core";
 import { ShoppingCartOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useStyles } from "./MenuBar.styles";
+import { useSelector } from "react-redux";
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    right: -3,
+    top: 13,
+    border: "2px solid white",
+    color: "white",
+    padding: "0 4px",
+  },
+}))(Badge);
 
 export function MenuBar() {
   const classes = useStyles();
+  const cartQuantity = useSelector((state) => state.cart.quantity);
+
   const linksList = [
     { name: "Home", link: "/" },
     { name: "Store", link: "/store" },
@@ -52,7 +67,9 @@ export function MenuBar() {
             })}
             <Link to="/cart">
               <IconButton>
-                <ShoppingCartOutlined />
+                <StyledBadge badgeContent={cartQuantity} showZero>
+                  <ShoppingCartOutlined />
+                </StyledBadge>
               </IconButton>
             </Link>
             <Tooltip title="User">

@@ -9,26 +9,84 @@ import {
   Typography,
 } from "@material-ui/core";
 import { AddShoppingCartOutlined } from "@material-ui/icons";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStyles } from "./Store.styles";
+import { publicRequest } from "../../requestMethods";
+import { useDispatch } from "react-redux";
+import { addProduct } from "../../redux/cartRedux";
 
 export default function Store() {
   const classes = useStyles();
-  const image = require("../../images/Home1.jpg");
-  // const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [filter, setFilter] = useState("default");
+  const image = require("../../images/no image.png");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getAllProducts = async () => {
+      try {
+        const res = await publicRequest.get("/products/");
+        setData(res.data);
+      } catch (err) {}
+    };
+
+    getAllProducts();
+  }, []);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
+
+  const handleAddCart = (productId) => {
+    const currentProduct = data.filter((product) => {
+      if (product._id === productId) {
+        return product;
+      }
+    });
+
+    dispatch(addProduct({ currentProduct, quantity: 1 }));
+  };
+
+  useEffect(() => {
+    if (filter === "ltoh") {
+      setFilteredProducts(
+        data.sort((a, b) => {
+          return b.price - a.price;
+        })
+      );
+    } else if (filter === "htol") {
+      setFilteredProducts(
+        data.sort((a, b) => {
+          return a.price - b.price;
+        })
+      );
+    } else if (filter === "available") {
+      setFilteredProducts(
+        data.filter((product) => {
+          if (product.available) {
+            return product;
+          }
+        })
+      );
+    } else {
+      setFilteredProducts([]);
+    }
+  }, [filter]);
 
   return (
     <div className={classes.root}>
       <Typography variant="h1" align="center" gutterBottom>
         Store
       </Typography>
-      <Grid container spacing={2} justifyContent="center" alignItems="center">
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        direction="row"
+      >
         <Grid
           item
           xs={12}
@@ -44,36 +102,149 @@ export default function Store() {
             <option value="available">Available Products</option>
           </Select>
         </Grid>
-        <Grid item xs={10} md={10} lg={3} container direction="column">
-          <Card raised>
-            <Link to={`/store}`} style={{ textDecoration: "none" }}>
-              <CardContent>
-                <Grid item xs>
-                  <img src={image} alt="" className={classes.image} />
+        {filteredProducts.length > 0
+          ? filteredProducts.map((product) => {
+              var imageLink = "";
+              if (product.productImage) {
+                imageLink = `http://localhost:5000/${product.productImage}`;
+              } else {
+                imageLink = image;
+              }
+              return (
+                <Grid item xs={10} md={3} lg={3} key={product._id}>
+                  <Grid container direction="column">
+                    <Card raised>
+                      <Link
+                        to={`/store/${product._id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <CardContent>
+                          <Grid item xs>
+                            <img
+                              src={imageLink}
+                              alt=""
+                              className={classes.image}
+                            />
+                          </Grid>
+                          <Grid item xs>
+                            <Typography className={classes.text}>
+                              {product.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography className={classes.text}>
+                              Rs {product.price}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            {product.available ? (
+                              <Typography className={classes.textInStock}>
+                                In Stock!
+                              </Typography>
+                            ) : (
+                              <Typography className={classes.textOutStock}>
+                                Out of Stock!
+                              </Typography>
+                            )}
+                          </Grid>
+                        </CardContent>
+                      </Link>
+                      <CardActions>
+                        <Grid item xs={12}>
+                          <Link
+                            to={`/store/${product._id}`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <Button variant="outlined">View Product</Button>
+                          </Link>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Button
+                            variant="outlined"
+                            disabled={!product.available}
+                            onClick={() => handleAddCart(product._id)}
+                          >
+                            <AddShoppingCartOutlined />
+                            <Typography>Add To Cart</Typography>
+                          </Button>
+                        </Grid>
+                      </CardActions>
+                    </Card>
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  <Typography className={classes.text}>Product 1</Typography>
+              );
+            })
+          : data.map((product) => {
+              var imageLink = "";
+              if (product.productImage) {
+                imageLink = `http://localhost:5000/${product.productImage}`;
+              } else {
+                imageLink = image;
+              }
+              return (
+                <Grid item xs={10} md={3} lg={3} key={product._id}>
+                  <Grid container direction="column">
+                    <Card raised>
+                      <Link
+                        to={`/store/${product._id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <CardContent>
+                          <Grid item xs>
+                            <img
+                              src={imageLink}
+                              alt=""
+                              className={classes.image}
+                            />
+                          </Grid>
+                          <Grid item xs>
+                            <Typography className={classes.text}>
+                              {product.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography className={classes.text}>
+                              Rs {product.price}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            {product.available ? (
+                              <Typography className={classes.textInStock}>
+                                In Stock!
+                              </Typography>
+                            ) : (
+                              <Typography className={classes.textOutStock}>
+                                Out of Stock!
+                              </Typography>
+                            )}
+                          </Grid>
+                        </CardContent>
+                      </Link>
+                      <CardActions>
+                        <Grid item xs={12}>
+                          <Link
+                            to={`/store/${product._id}`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <Button variant="outlined">View Product</Button>
+                          </Link>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Button
+                            variant="outlined"
+                            disabled={!product.available}
+                            onClick={handleAddCart}
+                          >
+                            <AddShoppingCartOutlined />
+                            <Typography>Add To Cart</Typography>
+                          </Button>
+                        </Grid>
+                      </CardActions>
+                    </Card>
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  <Typography className={classes.text}>Rs 100</Typography>
-                </Grid>
-              </CardContent>
-            </Link>
-            <CardActions>
-              <Grid item xs={12}>
-                <Link to="" style={{ textDecoration: "none" }}>
-                  <Button variant="outlined">View Product</Button>
-                </Link>
-              </Grid>
-              <Grid item xs={12}>
-                <Button variant="outlined">
-                  <AddShoppingCartOutlined />
-                  <Typography>Add To Cart</Typography>
-                </Button>
-              </Grid>
-            </CardActions>
-          </Card>
-        </Grid>
+              );
+            })}
       </Grid>
     </div>
   );

@@ -17,4 +17,10 @@ export const useStyles = makeStyles({
   buttonCart: {
     paddingTop: "50px",
   },
+  textInStock: {
+    color: "green",
+  },
+  textOutStock: {
+    color: "red",
+  },
 });
