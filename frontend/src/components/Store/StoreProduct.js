@@ -37,7 +37,7 @@ export default function StoreProduct() {
 
   var imageLink = "";
   if (product.productImage) {
-    imageLink = `http://localhost:5000/${product.productImage}`;
+    imageLink = `http://103.86.55.115:5000/${product.productImage}`;
   } else {
     imageLink = image;
   }
