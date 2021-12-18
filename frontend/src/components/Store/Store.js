@@ -40,11 +40,7 @@ export default function Store() {
   };
 
   const handleAddCart = (productId) => {
-    const currentProduct = data.filter((product) => {
-      if (product._id === productId) {
-        return product;
-      }
-    });
+    const currentProduct = data.find((product) => product._id === productId);
 
     dispatch(addProduct({ currentProduct, quantity: 1 }));
   };
@@ -68,11 +64,13 @@ export default function Store() {
           if (product.available) {
             return product;
           }
+          return null;
         })
       );
     } else {
       setFilteredProducts([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   return (
@@ -233,7 +231,7 @@ export default function Store() {
                           <Button
                             variant="outlined"
                             disabled={!product.available}
-                            onClick={handleAddCart}
+                            onClick={() => handleAddCart(product._id)}
                           >
                             <AddShoppingCartOutlined />
                             <Typography>Add To Cart</Typography>

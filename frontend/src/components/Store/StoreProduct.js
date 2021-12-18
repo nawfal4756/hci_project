@@ -28,6 +28,7 @@ export default function StoreProduct() {
     };
 
     getProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddCart = () => {
@@ -85,6 +86,7 @@ export default function StoreProduct() {
                       onClick={() => {
                         setQuantity(quantity + 1);
                       }}
+                      disabled={quantity >= product.quantityAvailable}
                     >
                       <AddOutlined />
                     </Fab>
