@@ -111,7 +111,7 @@ export default function Store() {
                 imageLink = image;
               }
               return (
-                <Grid item xs={10} md={3} lg={3} key={product._id}>
+                <Grid item xs={10} md={10} lg={3} key={product._id}>
                   <Grid container direction="column">
                     <Card raised>
                       <Link
@@ -182,7 +182,7 @@ export default function Store() {
                 imageLink = image;
               }
               return (
-                <Grid item xs={10} md={3} lg={3} key={product._id}>
+                <Grid item xs={10} md={10} lg={3} key={product._id}>
                   <Grid container direction="column">
                     <Card raised>
                       <Link
