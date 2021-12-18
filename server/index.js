@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const cors = require("cors");
 const authCustomerRoute = require("./routes/authCustomer");
 const authEmployeeRoute = require("./routes/authEmployee");
 const customerRoute = require("./routes/customer");
@@ -25,6 +26,7 @@ mongoose
   });
 
 app.use(express.json());
+app.use(cors());
 app.use(morgan("dev"));
 app.use("/uploads", express.static("./uploads"));
 app.use("/api/authCustomers", authCustomerRoute);
@@ -36,7 +38,7 @@ app.use("/api/carts", cartRoute);
 app.use("/api/expenses", expenseRoute);
 app.use("/api/feeds", feedRoute);
 app.use("/api/orders", orderRoute);
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.status(200).send("<h1>Hello Yaar! Under Construction!!!</h1>");
 });
 
