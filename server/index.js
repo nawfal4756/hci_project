@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
+const helmet = require("helmet");
+const compression = require("compression");
 const authCustomerRoute = require("./routes/authCustomer");
 const authEmployeeRoute = require("./routes/authEmployee");
 const customerRoute = require("./routes/customer");
@@ -27,6 +29,8 @@ mongoose
 
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
+app.use(compression());
 app.use(morgan("dev"));
 app.use("/uploads", express.static("./uploads"));
 app.use("/api/authCustomers", authCustomerRoute);
