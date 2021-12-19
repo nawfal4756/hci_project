@@ -22,12 +22,24 @@ export default function Login() {
       try {
         const res = await publicRequest.post("/authCustomers/login", values);
         dispatch(loginSuccess(res.data));
-        dispatch(openSnackBar(`Welcome, ${res.data.name}!`));
+        dispatch(
+          openSnackBar({
+            message: `Welcome, ${res.data.name}!`,
+            severity: "success",
+          })
+        );
       } catch (err) {
         if (typeof typeof err.response.data === "string") {
-          dispatch(openSnackBar(err.response.data));
+          dispatch(
+            openSnackBar({ message: err.response.data, severity: "error" })
+          );
         } else {
-          dispatch(openSnackBar("Server Error. Try Again Later"));
+          dispatch(
+            openSnackBar({
+              message: "Server Error. Try Again Later",
+              severity: "error",
+            })
+          );
         }
         dispatch(loginFailure());
       }

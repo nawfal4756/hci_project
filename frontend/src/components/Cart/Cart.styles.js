@@ -20,4 +20,9 @@ export const useStyles = makeStyles({
     backgroundColor: "blue",
     color: "white",
   },
+  clear: {
+    marginTop: "10%",
+    backgroundColor: "red",
+    color: "white",
+  },
 });

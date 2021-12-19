@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Box,
   Button,
   FormHelperText,
   Grid,
@@ -73,13 +72,25 @@ export default function MyAccount() {
       try {
         const res = await userRequest.put(`/customers/${info._id}`, values);
         console.log(res.data);
-        dispatch(openSnackBar(`Data Successfully Updated, ${res.data.name}`));
+        dispatch(
+          openSnackBar({
+            message: `Data Successfully Updated, ${res.data.name}`,
+            severity: "success",
+          })
+        );
         setUpdated(false);
       } catch (err) {
         if (typeof err.response.data === "string") {
-          dispatch(openSnackBar(err.response.data));
+          dispatch(
+            openSnackBar({ message: err.response.data, severity: "error" })
+          );
         } else {
-          dispatch(openSnackBar("Server Error. Try Again Later"));
+          dispatch(
+            openSnackBar({
+              message: "Server Error. Try Again Later",
+              severity: "error",
+            })
+          );
         }
       }
     },

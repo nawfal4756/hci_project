@@ -75,12 +75,24 @@ export default function Register() {
     try {
       const res = await publicRequest.post("/authCustomers/register", others);
       navigate("/login", { replace: true });
-      dispatch(openSnackBar(`Registration Successful, ${res.data.name}`));
+      dispatch(
+        openSnackBar({
+          message: `Registration Successful, ${res.data.name}`,
+          severity: "success",
+        })
+      );
     } catch (err) {
       if (typeof err.response.data === "string") {
-        dispatch(openSnackBar(err.response.data));
+        dispatch(
+          openSnackBar({ message: err.response.data, severity: "error" })
+        );
       } else {
-        dispatch(openSnackBar("Server Error. Try Again Later"));
+        dispatch(
+          openSnackBar({
+            message: "Server Error. Try Again Later",
+            severity: "error",
+          })
+        );
       }
     }
   };

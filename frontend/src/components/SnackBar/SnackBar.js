@@ -1,11 +1,12 @@
-import { IconButton, Slide, Snackbar } from "@material-ui/core";
+import { IconButton, Snackbar } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
+import { Alert as MuiAlert } from "@material-ui/lab";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeSnackBar } from "../../redux/snackBarRedux";
 
-function SlideTransition(props) {
-  return <Slide {...props} direction="up" />;
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function SnackBar() {
@@ -20,7 +21,6 @@ export default function SnackBar() {
         onClose={() => {
           dispatch(closeSnackBar());
         }}
-        message={snackBarState.message}
         action={
           <IconButton
             onClick={() => {
@@ -30,8 +30,9 @@ export default function SnackBar() {
             <Close />
           </IconButton>
         }
-        TransitionComponent={SlideTransition}
-      />
+      >
+        <Alert severity={snackBarState.severity}>{snackBarState.message}</Alert>
+      </Snackbar>
     </div>
   );
 }

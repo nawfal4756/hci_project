@@ -62,7 +62,12 @@ export function MenuBar() {
   };
   const handleCloseMenuAndLogout = () => {
     setAnchorEl(null);
-    dispatch(openSnackBar(`Goodbye, ${user.currentUser.name}!`));
+    dispatch(
+      openSnackBar({
+        message: `Goodbye, ${user.currentUser.name}!`,
+        severity: "success",
+      })
+    );
     dispatch(logout());
     navigate("/", { replace: true });
   };

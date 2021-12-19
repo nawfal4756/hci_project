@@ -6,7 +6,12 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changeQuantity, deleteProduct } from "../../redux/cartRedux";
+import {
+  changeQuantity,
+  clearCart,
+  deleteProduct,
+} from "../../redux/cartRedux";
+import { openSnackBar } from "../../redux/snackBarRedux";
 import { useStyles } from "./Cart.styles";
 
 export default function Cart() {
@@ -17,10 +22,25 @@ export default function Cart() {
 
   const handleQuantityChange = (productId, type) => {
     dispatch(changeQuantity({ productId, type }));
+
+    if (type === "dec") {
+      const product = cartItems.products.find((item) => item._id === productId);
+      if (product.quantity === 1) {
+        dispatch(
+          openSnackBar({ message: "Removed from cart!", severity: "success" })
+        );
+      }
+    }
   };
 
   const handleProductDelete = (productId) => {
     dispatch(deleteProduct({ productId }));
+    dispatch(
+      openSnackBar({
+        message: "Deleted from Cart Successfully!",
+        severity: "success",
+      })
+    );
   };
 
   return (
@@ -138,6 +158,18 @@ export default function Cart() {
               <Typography variant="h4" align="center">
                 Total: Rs {cartItems.total}
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                className={classes.clear}
+                fullWidth
+                variant="outlined"
+                onClick={() => {
+                  dispatch(clearCart());
+                }}
+              >
+                Clear Cart
+              </Button>
             </Grid>
             <Grid item xs={12}>
               <Button className={classes.checkout} fullWidth variant="outlined">

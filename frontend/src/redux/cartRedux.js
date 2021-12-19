@@ -33,6 +33,7 @@ const cartSlice = createSlice({
           state.products = state.products.filter(
             (item) => item._id !== product._id
           );
+          state.quantity -= 1;
         }
       } else if (action.payload.type === "inc") {
         product.quantity += 1;
@@ -49,8 +50,14 @@ const cartSlice = createSlice({
         (item) => item._id !== action.payload.productId
       );
     },
+    clearCart: (state) => {
+      state.products = [];
+      state.quantity = 0;
+      state.total = 0;
+    },
   },
 });
 
-export const { addProduct, changeQuantity, deleteProduct } = cartSlice.actions;
+export const { addProduct, changeQuantity, deleteProduct, clearCart } =
+  cartSlice.actions;
 export default cartSlice.reducer;
