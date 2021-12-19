@@ -1,9 +1,20 @@
-import { Button, Fab, Grid, TextField, Typography } from "@material-ui/core";
+import {
+  Button,
+  Fab,
+  Grid,
+  TextField,
+  Typography,
+  Snackbar,
+  IconButton,
+  Slide,
+} from "@material-ui/core";
 import {
   AddOutlined,
   AddShoppingCartOutlined,
   RemoveOutlined,
+  Close,
 } from "@material-ui/icons";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
@@ -11,11 +22,16 @@ import { addProduct } from "../../redux/cartRedux";
 import { publicRequest } from "../../requestMethods";
 import { useStyles } from "./StoreProduct.styles";
 
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 export default function StoreProduct() {
   const classes = useStyles();
   const image = require("../../images/no image.png");
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState({});
+  const [snackBarState, setSnackBarState] = useState(false);
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -32,12 +48,19 @@ export default function StoreProduct() {
   }, []);
 
   const handleAddCart = () => {
-    dispatch(addProduct({ product, quantity }));
+    const currentProduct = product;
+    setSnackBarState(true);
+    dispatch(
+      addProduct({
+        ...currentProduct,
+        quantity,
+      })
+    );
   };
 
   var imageLink = "";
   if (product.productImage) {
-    imageLink = `http://103.86.55.115:5000/${product.productImage}`;
+    imageLink = `http://localhost:5000/${product.productImage}`;
   } else {
     imageLink = image;
   }
@@ -127,6 +150,25 @@ export default function StoreProduct() {
           </Grid>
         </Grid>
       </Grid>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={snackBarState}
+        autoHideDuration={6000}
+        onClose={() => {
+          setSnackBarState(false);
+        }}
+        message="Added to Cart!"
+        action={
+          <IconButton
+            onClick={() => {
+              setSnackBarState(false);
+            }}
+          >
+            <Close />
+          </IconButton>
+        }
+        TransitionComponent={SlideTransition}
+      />
     </div>
   );
 }

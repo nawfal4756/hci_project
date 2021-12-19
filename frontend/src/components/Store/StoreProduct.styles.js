@@ -23,4 +23,8 @@ export const useStyles = makeStyles({
   textOutStock: {
     color: "red",
   },
+  snackBar: {
+    backgroundColor: "green",
+    color: "white",
+  },
 });

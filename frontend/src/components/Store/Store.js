@@ -4,11 +4,14 @@ import {
   CardActions,
   CardContent,
   Grid,
+  IconButton,
   InputLabel,
   Select,
+  Slide,
+  Snackbar,
   Typography,
 } from "@material-ui/core";
-import { AddShoppingCartOutlined } from "@material-ui/icons";
+import { AddShoppingCartOutlined, Close } from "@material-ui/icons";
 import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStyles } from "./Store.styles";
@@ -16,11 +19,16 @@ import { publicRequest } from "../../requestMethods";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../redux/cartRedux";
 
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 export default function Store() {
   const classes = useStyles();
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filter, setFilter] = useState("default");
+  const [snackBarState, setSnackBarState] = useState(false);
   const image = require("../../images/no image.png");
   const dispatch = useDispatch();
 
@@ -41,8 +49,9 @@ export default function Store() {
 
   const handleAddCart = (productId) => {
     const currentProduct = data.find((product) => product._id === productId);
-
-    dispatch(addProduct({ currentProduct, quantity: 1 }));
+    setSnackBarState(true);
+    console.log(currentProduct);
+    dispatch(addProduct({ ...currentProduct, quantity: 1 }));
   };
 
   useEffect(() => {
@@ -104,7 +113,7 @@ export default function Store() {
           ? filteredProducts.map((product) => {
               var imageLink = "";
               if (product.productImage) {
-                imageLink = `http://103.86.55.115:5000/${product.productImage}`;
+                imageLink = `http://localhost:5000/${product.productImage}`;
               } else {
                 imageLink = image;
               }
@@ -175,7 +184,7 @@ export default function Store() {
           : data.map((product) => {
               var imageLink = "";
               if (product.productImage) {
-                imageLink = `http://103.86.55.115:5000/${product.productImage}`;
+                imageLink = `http://localhost:5000/${product.productImage}`;
               } else {
                 imageLink = image;
               }
@@ -244,6 +253,25 @@ export default function Store() {
               );
             })}
       </Grid>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={snackBarState}
+        autoHideDuration={6000}
+        onClose={() => {
+          setSnackBarState(false);
+        }}
+        message="Added to Cart!"
+        action={
+          <IconButton
+            onClick={() => {
+              setSnackBarState(false);
+            }}
+          >
+            <Close />
+          </IconButton>
+        }
+        TransitionComponent={SlideTransition}
+      />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import StoreProduct from "./components/Store/StoreProduct";
 import MyAccount from "./components/MyAccount/MyAccount";
 import PasswordChange from "./components/PasswordChange/PasswordChange";
 import Orders from "./components/Orders/Orders";
+import Cart from "./components/Cart/Cart";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="myaccount" element={<MyAccount />} />
           <Route path="password" element={<PasswordChange />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="cart" element={<Cart />} />
         </Routes>
       </Router>
     </div>
