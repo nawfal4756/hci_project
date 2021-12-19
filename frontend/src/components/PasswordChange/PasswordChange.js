@@ -25,6 +25,7 @@ const validationSchema = yup.object({
     .required("New password is required"),
   reNewPassword: yup
     .string("Re Enter New Password")
+    .required("Re-Enter Password is required")
     .oneOf([yup.ref("newPassword"), null], "Password does not match"),
 });
 

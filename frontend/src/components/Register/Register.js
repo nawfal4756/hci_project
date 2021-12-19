@@ -15,11 +15,14 @@ import {
 } from "@material-ui/pickers";
 import React, { useState } from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useStyles } from "./Register.styles";
 import * as yup from "yup";
 import YupPassword from "yup-password";
 import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { openSnackBar } from "../../redux/snackBarRedux";
+import { publicRequest } from "../../requestMethods";
 YupPassword(yup);
 
 const validationSchema = yup.object({
@@ -35,8 +38,14 @@ const validationSchema = yup.object({
   city: yup.string("Enter your city").required("City is required"),
   state: yup.string("Enter your state").required("State is required"),
   country: yup.string("Enter your country").required("Country is required"),
+  phone: yup
+    .number("Enter you Contact Number")
+    .typeError("Must be numbers only")
+    .integer("Cannot include decimal")
+    .min(11, "Contact Number shoulde be of 11 digits")
+    .required("Contact Number is required"),
   gender: yup.string("Select Your Gender").required("Gender is required"),
-  dob: yup.date().required("Date of Birth is required"),
+  dateOfBirth: yup.date().required("Date of Birth is required"),
   username: yup.string("Select Your username").required("Username is required"),
   password: yup
     .string("Enter your password")
@@ -44,16 +53,37 @@ const validationSchema = yup.object({
     .minUppercase(1, "Password should contain at least one upper case letter")
     .minSymbols(1, "Password should contain at least one special character")
     .required("Password is required"),
-  cusType: yup
+  customerType: yup
     .string("Select Customer Type")
     .required("Customer Type is required"),
+  rePassword: yup
+    .string("Re Enter New Password")
+    .required("Re-Enter Password is required")
+    .oneOf([yup.ref("password"), null], "Password does not match"),
 });
 
 export default function Register() {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const options = ["Karachi", "Faisalabad", "Badin", "Lahore", "Hyderabad"];
   const states = ["Sindh", "Punjab", "Khyber Pakhtunkhwa", "Balochistan"];
   const [dob, setDob] = useState(new Date());
+
+  const handleSubmit = async (values) => {
+    const { rePassword, ...others } = values;
+    try {
+      const res = await publicRequest.post("/authCustomers/register", others);
+      navigate("/login", { replace: true });
+      dispatch(openSnackBar(`Registration Successful, ${res.data.name}`));
+    } catch (err) {
+      if (typeof err.response.data === "string") {
+        dispatch(openSnackBar(err.response.data));
+      } else {
+        dispatch(openSnackBar("Server Error. Try Again Later"));
+      }
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -64,21 +94,24 @@ export default function Register() {
       city: "",
       state: "",
       country: "Pakistan",
+      phone: "",
       gender: "default",
-      dob: new Date(),
+      dateOfBirth: new Date(),
       username: "",
       password: "",
-      cusType: "default",
+      rePassword: "",
+      customerType: "default",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      handleSubmit(values);
     },
   });
 
   const handleDOBChange = (date) => {
     setDob(date);
-    formik.setFieldValue("dob", dob);
+    formik.setFieldValue("dateOfBirth", dob);
+    formik.setFieldValue("dateOfBirth", date);
   };
 
   return (
@@ -211,6 +244,21 @@ export default function Register() {
                     />
                   </Grid>
                   <Grid item xs>
+                    <TextField
+                      id="phone"
+                      label="Contact Number"
+                      variant="outlined"
+                      type="number"
+                      placeholder="03xxxxxxxxx"
+                      value={formik.values.phone}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.phone && Boolean(formik.errors.phone)
+                      }
+                      helperText={formik.touched.phone && formik.errors.phone}
+                    />
+                  </Grid>
+                  <Grid item xs>
                     <InputLabel htmlFor="gender">Gender</InputLabel>
                     <Select
                       native
@@ -236,14 +284,20 @@ export default function Register() {
                   <Grid item xs>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
-                        id="dob"
+                        id="dateOfBirth"
                         label="Date of Birth"
                         format="MM/dd/yyyy"
                         variant="outlined"
-                        value={formik.values.dob}
+                        value={formik.values.dateOfBirth}
                         onChange={handleDOBChange}
-                        error={formik.touched.dob && Boolean(formik.errors.dob)}
-                        helperText={formik.touched.dob && formik.errors.dob}
+                        error={
+                          formik.touched.dateOfBirth &&
+                          Boolean(formik.errors.dateOfBirth)
+                        }
+                        helperText={
+                          formik.touched.dateOfBirth &&
+                          formik.errors.dateOfBirth
+                        }
                         disableFuture
                       />
                     </MuiPickersUtilsProvider>
@@ -282,13 +336,32 @@ export default function Register() {
                     />
                   </Grid>
                   <Grid item xs>
-                    <InputLabel htmlFor="cusType">Customer Type</InputLabel>
+                    <TextField
+                      id="rePassword"
+                      label="Re-Enter Password"
+                      type="password"
+                      variant="outlined"
+                      value={formik.values.rePassword}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.rePassword &&
+                        Boolean(formik.errors.rePassword)
+                      }
+                      helperText={
+                        formik.touched.rePassword && formik.errors.rePassword
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs>
+                    <InputLabel htmlFor="customerType">
+                      Customer Type
+                    </InputLabel>
                     <Select
                       native
                       required
                       variant="outlined"
-                      inputProps={{ id: "cusType" }}
-                      value={formik.values.cusType}
+                      inputProps={{ id: "customerType" }}
+                      value={formik.values.customerType}
                       onChange={formik.handleChange}
                     >
                       <option value="default" disabled>
@@ -297,10 +370,11 @@ export default function Register() {
                       <option value="retail">Retail</option>
                       <option value="business">Business</option>
                     </Select>
-                    {formik.touched.cusType &&
-                    Boolean(formik.errors.cusType) ? (
+                    {formik.touched.customerType &&
+                    Boolean(formik.errors.customerType) ? (
                       <FormHelperText>
-                        {formik.touched.cusType && formik.errors.cusType}
+                        {formik.touched.customerType &&
+                          formik.errors.customerType}
                       </FormHelperText>
                     ) : null}
                   </Grid>

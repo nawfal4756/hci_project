@@ -18,7 +18,7 @@ router.post("/register", async (req, res) => {
     }
 
     customer = await Customer.findOne({
-      contactNumbers: req.body.contactNumbers,
+      phone: req.body.phone,
     });
     if (customer) {
       return res
@@ -34,8 +34,12 @@ router.post("/register", async (req, res) => {
     dateOfBirth: req.body.dateOfBirth,
     name: req.body.name,
     email: req.body.email,
-    addresses: req.body.addresses,
-    contactNumbers: req.body.contactNumbers,
+    street: req.body.street,
+    area: req.body.area,
+    city: req.body.city,
+    state: req.body.state,
+    country: req.body.country,
+    phone: req.body.phone,
     username: req.body.username,
     password: createHash("sha256").update(req.body.password).digest("hex"),
     customerType: req.body.customerType,

@@ -10,20 +10,16 @@ const Customer = require("../models/Customer");
 // Update
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    if (req.body.password) {
-      const employee = await Employee.findById(req.params.id);
-      if (
-        createHash("sha256").update(req.body.oldPassword).digest("hex") ===
-        employee.password
-      ) {
-        req.body.password = createHash("sha256")
-          .update(req.body.password)
-          .digest("hex");
-      } else {
-        return res.status(401).json("Old password entered is in correct!");
+    const customer = await Customer.findOne({
+      phone: req.body.phone,
+    });
+    if (customer) {
+      if (customer.phone !== req.body.phone) {
+        return res
+          .status(409)
+          .json("User already exist with this contact number!");
       }
     }
-
     const updatedCustomer = await Customer.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },

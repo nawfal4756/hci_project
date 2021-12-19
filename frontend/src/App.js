@@ -17,6 +17,7 @@ import MyAccount from "./components/MyAccount/MyAccount";
 import PasswordChange from "./components/PasswordChange/PasswordChange";
 import Orders from "./components/Orders/Orders";
 import Cart from "./components/Cart/Cart";
+import SnackBar from "./components/SnackBar/SnackBar";
 
 function App() {
   const user = useSelector((state) => state.user.loggedIn);
@@ -24,6 +25,7 @@ function App() {
     <div>
       <Router>
         <MenuBar />
+        <SnackBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="about-us"></Route>
@@ -41,10 +43,16 @@ function App() {
           />
           <Route
             path="myaccount"
-            element={user ? <MyAccount /> : <Navigate to="login" />}
+            element={!user ? <Navigate to="/login" /> : <MyAccount />}
           />
-          <Route path="password" element={<PasswordChange />} />
-          <Route path="orders" element={<Orders />} />
+          <Route
+            path="password"
+            element={user ? <PasswordChange /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="orders"
+            element={user ? <Orders /> : <Navigate to="/login" />}
+          />
           <Route path="cart" element={<Cart />} />
         </Routes>
       </Router>

@@ -5,8 +5,10 @@ import { useFormik } from "formik";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useStyles } from "./Login.styles";
-import { login } from "../../redux/apiCalls";
 import { useDispatch } from "react-redux";
+import { loginStart, loginSuccess, loginFailure } from "../../redux/userRedux";
+import { publicRequest } from "../../requestMethods";
+import { openSnackBar } from "../../redux/snackBarRedux";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -15,8 +17,20 @@ export default function Login() {
       username: "",
       password: "",
     },
-    onSubmit: (values) => {
-      login(dispatch, values);
+    onSubmit: async (values) => {
+      dispatch(loginStart());
+      try {
+        const res = await publicRequest.post("/authCustomers/login", values);
+        dispatch(loginSuccess(res.data));
+        dispatch(openSnackBar(`Welcome, ${res.data.name}!`));
+      } catch (err) {
+        if (typeof typeof err.response.data === "string") {
+          dispatch(openSnackBar(err.response.data));
+        } else {
+          dispatch(openSnackBar("Server Error. Try Again Later"));
+        }
+        dispatch(loginFailure());
+      }
     },
   });
   const classes = useStyles();
