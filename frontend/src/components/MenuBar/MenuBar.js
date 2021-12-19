@@ -16,7 +16,8 @@ import {
 import { ShoppingCartOutlined } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useStyles } from "./MenuBar.styles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/userRedux";
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -31,7 +32,18 @@ const StyledBadge = withStyles((theme) => ({
 export function MenuBar() {
   const classes = useStyles();
   const cartQuantity = useSelector((state) => state.cart.quantity);
-
+  const loggedIn = useSelector((state) => state.user.loggedIn);
+  const dispatch = useDispatch();
+  const notLoggedInList = [
+    { name: "Login", link: "/login" },
+    { name: "Register", link: "/register" },
+  ];
+  const loggedInList = [
+    { name: "My Account", link: "/myaccount" },
+    { name: "Change Password", link: "/password" },
+    { name: "My Orders", link: "/orders" },
+    { name: "Logout", link: "/" },
+  ];
   const linksList = [
     { name: "Home", link: "/" },
     { name: "Store", link: "/store" },
@@ -44,6 +56,10 @@ export function MenuBar() {
   };
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+  const handleCloseMenuAndLogout = () => {
+    setAnchorEl(null);
+    dispatch(logout());
   };
 
   return (
@@ -91,16 +107,37 @@ export function MenuBar() {
               open={Boolean(anchorEl)}
               onClose={handleCloseMenu}
             >
-              <MenuItem onClick={handleCloseMenu}>
-                <Link to="/login" style={{ textDecoration: "none" }}>
-                  <Typography className={classes.text}>Login</Typography>
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleCloseMenu}>
-                <Link to="/register" style={{ textDecoration: "none" }}>
-                  <Typography className={classes.text}>Register</Typography>
-                </Link>
-              </MenuItem>
+              {loggedIn
+                ? loggedInList.map((item) => {
+                    return item.name !== "Logout" ? (
+                      <MenuItem onClick={handleCloseMenu}>
+                        <Link to={item.link} style={{ textDecoration: "none" }}>
+                          <Typography className={classes.text}>
+                            {item.name}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    ) : (
+                      <MenuItem onClick={handleCloseMenuAndLogout}>
+                        <Link to={item.link} style={{ textDecoration: "none" }}>
+                          <Typography className={classes.text}>
+                            {item.name}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    );
+                  })
+                : notLoggedInList.map((item) => {
+                    return (
+                      <MenuItem onClick={handleCloseMenu}>
+                        <Link to={item.link} style={{ textDecoration: "none" }}>
+                          <Typography className={classes.text}>
+                            {item.name}
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                    );
+                  })}
             </Menu>
           </Toolbar>
         </AppBar>
