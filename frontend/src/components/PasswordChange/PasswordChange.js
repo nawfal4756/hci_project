@@ -8,9 +8,12 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useStyles } from "./PasswordChange.styles";
+import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import YupPassword from "yup-password";
+import { openSnackBar } from "../../redux/snackBarRedux";
+import { userRequest } from "../../requestMethods";
 YupPassword(yup);
 
 const validationSchema = yup.object({
@@ -31,6 +34,8 @@ const validationSchema = yup.object({
 
 export default function PasswordChange() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.currentUser);
   const formik = useFormik({
     initialValues: {
       oldPassword: "",
@@ -38,8 +43,32 @@ export default function PasswordChange() {
       reNewPassword: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const res = await userRequest.put(
+          `/customers/changePassword/${user._id}`,
+          values
+        );
+        dispatch(
+          openSnackBar({
+            message: `Password Updated Successfully, ${res.data.name}!`,
+            severity: "success",
+          })
+        );
+      } catch (err) {
+        if (typeof err.response.data === "string") {
+          dispatch(
+            openSnackBar({ message: err.response.data, severity: "error" })
+          );
+        } else {
+          dispatch(
+            openSnackBar({
+              message: "Server Error. Try Again Later",
+              severity: "error",
+            })
+          );
+        }
+      }
     },
   });
 

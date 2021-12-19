@@ -24,6 +24,7 @@ import { openSnackBar } from "../../redux/snackBarRedux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import YupPassword from "yup-password";
+import { updateUser } from "../../redux/userRedux";
 YupPassword(yup);
 
 const validationSchema = yup.object({
@@ -72,6 +73,7 @@ export default function MyAccount() {
       try {
         const res = await userRequest.put(`/customers/${info._id}`, values);
         console.log(res.data);
+        dispatch(updateUser(values));
         dispatch(
           openSnackBar({
             message: `Data Successfully Updated, ${res.data.name}`,

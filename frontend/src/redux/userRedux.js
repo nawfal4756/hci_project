@@ -27,9 +27,16 @@ const userSlice = createSlice({
       state.error = false;
       state.loggedIn = false;
     },
+    updateUser: (state, action) => {
+      state.currentUser.street = action.payload.street;
+      state.currentUser.area = action.payload.area;
+      state.currentUser.city = action.payload.city;
+      state.currentUser.state = action.payload.state;
+      state.currentUser.phone = action.payload.phone;
+    },
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } =
+export const { loginStart, loginSuccess, loginFailure, logout, updateUser } =
   userSlice.actions;
 export default userSlice.reducer;

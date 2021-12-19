@@ -31,6 +31,40 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
   }
 });
 
+// Update User
+router.put(
+  "/changePassword/:id",
+  verifyTokenAndAuthorization,
+  async (req, res) => {
+    try {
+      const customer = await Customer.findById(req.params.id);
+      console.log(customer.password);
+      if (
+        createHash("sha256").update(req.body.oldPassword).digest("hex") !==
+        customer.password
+      ) {
+        return res.status(409).json("Old Password is not correct!");
+      }
+      if (req.body.oldPassword === req.body.newPassword) {
+        return res
+          .status(409)
+          .json("Password cannot be changed as it is same as old password!");
+      }
+      customer.password = createHash("sha256")
+        .update(req.body.newPassword)
+        .digest("hex");
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        req.params.id,
+        { $set: customer },
+        { new: true }
+      );
+      res.status(200).json(updatedCustomer);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+);
+
 // Update Verification Only
 router.put("/verification/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
