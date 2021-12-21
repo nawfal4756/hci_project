@@ -7,7 +7,7 @@ const verifyToken = (req, res, next) => {
     try {
       jwt.verify(token, process.env.JWT_SEC, (err, customer) => {
         if (err) {
-          res.status(403).json("Token is not valid!");
+          return res.status(403).json("Token is not valid!");
         }
         req.customer = customer;
         next();
@@ -27,7 +27,7 @@ const verifyTokenAndAuthorization = (req, res, next) => {
     if (req.customer.id == req.params.id || req.customer.active) {
       next();
     } else {
-      res.status(403).json("You are not alowed to do that!");
+      return res.status(403).json("You are not alowed to do that!");
     }
   });
 };
