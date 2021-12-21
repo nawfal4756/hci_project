@@ -50,7 +50,7 @@ export function MenuBar() {
   const linksList = [
     { name: "Home", link: "/" },
     { name: "Store", link: "/store" },
-    { name: "Contact Us", link: "/contact-us" },
+    // { name: "Contact Us", link: "/contact-us" },
   ];
   const [anchorEl, setAnchorEl] = useState(null);
 

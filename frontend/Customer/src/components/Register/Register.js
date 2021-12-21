@@ -260,7 +260,6 @@ export default function Register() {
                       id="phone"
                       label="Contact Number"
                       variant="outlined"
-                      type="number"
                       placeholder="03xxxxxxxxx"
                       value={formik.values.phone}
                       onChange={formik.handleChange}
@@ -283,9 +282,9 @@ export default function Register() {
                       <option value="default" disabled>
                         Select
                       </option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </Select>
                     {formik.touched.gender && Boolean(formik.errors.gender) ? (
                       <FormHelperText>
