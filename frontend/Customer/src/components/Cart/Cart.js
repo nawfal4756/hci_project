@@ -6,6 +6,7 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   changeQuantity,
   clearCart,
@@ -172,9 +173,15 @@ export default function Cart() {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <Button className={classes.checkout} fullWidth variant="outlined">
-                CheckOut
-              </Button>
+              <Link to="/checkout">
+                <Button
+                  className={classes.checkout}
+                  fullWidth
+                  variant="outlined"
+                >
+                  Continue
+                </Button>
+              </Link>
             </Grid>
           </div>
         ) : null}

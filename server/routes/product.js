@@ -4,6 +4,7 @@ const { verifyTokenAndProductAccess } = require("./verifyTokenEmployee");
 const multer = require("multer");
 const fs = require("fs").promises;
 const path = require("path");
+const { verifyTokenAndAuthorization } = require("./verifyTokenCustomer");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -98,6 +99,32 @@ router.put(
     } catch (err) {
       res.status(500).json(err);
     }
+  }
+);
+
+// Get Total Price
+router.post(
+  "/totalprice/:id",
+  verifyTokenAndAuthorization,
+  async (req, res) => {
+    let subTotal = 0;
+    let notFound = false;
+    await Promise.all(
+      req.body.products.map(async (item) => {
+        const product = await Product.findById(item._id);
+        if (!product) {
+          notFound = true;
+          return;
+        }
+        subTotal += product.price * item.quantity;
+      })
+    );
+
+    if (notFound) {
+      return res.status(404).json("Product Not Found!");
+    }
+
+    res.status(200).json(subTotal * 0.13);
   }
 );
 

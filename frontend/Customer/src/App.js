@@ -18,6 +18,7 @@ import PasswordChange from "./components/PasswordChange/PasswordChange";
 import Orders from "./components/Orders/Orders";
 import Cart from "./components/Cart/Cart";
 import SnackBar from "./components/SnackBar/SnackBar";
+import Checkout from "./components/Checkout/Checkout";
 
 function App() {
   const user = useSelector((state) => state.user.loggedIn);
@@ -54,6 +55,10 @@ function App() {
             element={user ? <Orders /> : <Navigate to="/login" />}
           />
           <Route path="cart" element={<Cart />} />
+          <Route
+            path="checkout"
+            element={user ? <Checkout /> : <Navigate to="/login" />}
+          />
         </Routes>
       </Router>
     </div>
