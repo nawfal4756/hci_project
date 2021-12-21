@@ -121,7 +121,7 @@ router.delete(
 
       if (minutes > 5) {
         return res
-          .status(403)
+          .status(406)
           .json("Order cannot be deleted as time is exceeded by 5 minutes!");
       }
 
@@ -231,11 +231,14 @@ router.put("/:orderId", verifyTokenAndOrderAccess, async (req, res) => {
   }
 });
 
-// Get All Orders of Customer
-router.get(
-  "/customer/:customerId",
-  verifyTokenAndOrderAccess,
-  (req, res) => {}
-);
+// Get All Orders of Customer for Customer
+router.get("/customer/:id", verifyTokenAndAuthorization, async (req, res) => {
+  try {
+    const customerOrders = await Order.find({ customerId: req.params.id });
+    res.status(200).json(customerOrders);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;
