@@ -49,15 +49,26 @@ router.post(
   verifyTokenAndAuthorization,
   async (req, res) => {
     let subTotal = 0;
+    let notFound = false;
+    let quantityError = false;
     const newOrder = new Order(req.body);
+
+    if (newOrder.products.length <= 0) {
+      return res.status(406).json("Cart cannot be empty");
+    }
 
     await Promise.all(
       newOrder.products.map(async (productItem) => {
-        const product = await Product.findById(productItem.productId);
+        const product = await Product.findById(productItem._id);
         if (!product) {
-          return res.status(404).json("Product not found!");
+          notFound = true;
+          return;
         }
         product.quantityAvailable -= productItem.quantity;
+        product.quantitySold += productItem.quantity;
+        if (productItem.quantity > product.quantityAvailable) {
+          quantityError = true;
+        }
         await product
           .save()
           .then()
@@ -69,6 +80,16 @@ router.post(
         return productItem;
       })
     );
+
+    if (notFound) {
+      return res.status(404).json("Product not found!");
+    }
+
+    if (quantityError) {
+      return res
+        .status(406)
+        .json("Quantity Requested for order is not available");
+    }
 
     newOrder.orderNo = orderid.generate(Date());
     newOrder.subTotal = subTotal.toFixed(2);

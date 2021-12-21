@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Button,
   FormControl,
@@ -8,55 +8,62 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  TextField,
   Typography,
 } from "@material-ui/core";
-import StripeCheckout from "react-stripe-checkout";
 import { useStyles } from "./Checkout.styles";
-import { publicRequest, userRequest } from "../../requestMethods";
-import { useSelector } from "react-redux";
+import { userRequest } from "../../requestMethods";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useFormik } from "formik";
+import { openSnackBar } from "../../redux/snackBarRedux";
+import { clearCart } from "../../redux/cartRedux";
 
 export default function Checkout() {
-  const STRIPE_KEY =
-    "pk_test_51HinnOFsnlx225g691MvvyOswXQTLQrvLxso5qutMVC9YhmEIy1MWz0wTNAfkwRw29TRLbXGqkbs4dR1YH2CZLfn00qgYisvsX";
   const classes = useStyles();
-  const [totalAmountState, setTotalAmountState] = useState(0);
-  const [stripeToken, setStripeToken] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("cod");
   const user = useSelector((state) => state.user.currentUser);
   const cart = useSelector((state) => state.cart);
   const navigate = useNavigate();
-
-  const onToken = (token) => {
-    setStripeToken(token);
-  };
-
-  useEffect(() => {
-    const getTotalAmount = async () => {
+  const dispatch = useDispatch();
+  const formik = useFormik({
+    initialValues: {
+      payment: "cod",
+      additioalNotes: "",
+    },
+    onSubmit: async (values) => {
       try {
-        let res = await userRequest.post(
-          `/products/totalprice/${user._id}`,
-          cart
+        const res = await userRequest.post(
+          `/orders/create/customer/${user._id}`,
+          {
+            customerId: user._id,
+            products: cart.products,
+            additioalNotes: values.additioalNotes,
+          }
         );
-        setTotalAmountState(res.data);
-      } catch (err) {}
-    };
-    getTotalAmount();
-  }, []);
-
-  useEffect(() => {
-    const backendPaymentRequest = async () => {
-      try {
-        const res = await publicRequest.post("/checkout/payment", {
-          tokenId: stripeToken,
-          amount: totalAmountState,
-        });
-        console.log(res.data);
-      } catch (err) {}
-    };
-    backendPaymentRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stripeToken]);
+        dispatch(
+          openSnackBar({
+            message: `Order placed for amount Rs ${res.data.total}`,
+            severity: "success",
+          })
+        );
+        dispatch(clearCart());
+        navigate("/orders", { replace: true });
+      } catch (err) {
+        if (typeof err.response.data === "string") {
+          dispatch(
+            openSnackBar({ message: err.response.data, severity: "error" })
+          );
+        } else {
+          dispatch(
+            openSnackBar({
+              message: "Server Error. Try Again Later",
+              severity: "error",
+            })
+          );
+        }
+      }
+    },
+  });
 
   return (
     <div>
@@ -64,55 +71,53 @@ export default function Checkout() {
         container
         spacing={2}
         justifyContent="space-evenly"
-        alignContent="center"
+        alignItems="center"
       >
         <Grid item xs={12}>
           <Typography variant="h2" align="center">
             Checkout
           </Typography>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          container
-          justifyContent="space-evenly"
-          alignContent="center"
-          direction="column"
-        >
-          <form>
+        <Grid item xs={12}>
+          <form onSubmit={formik.handleSubmit}>
             <Paper elevation={5} className={classes.paper}>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">
-                  <RadioGroup
-                    value={paymentMethod}
-                    id="payment"
-                    onChange={(event) => {
-                      setPaymentMethod(event.target.value);
-                    }}
+              <Grid
+                container
+                justifyContent="space-evenly"
+                alignItems="center"
+                direction="column"
+              >
+                <Grid item xs={12}>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">
+                      <RadioGroup id="payment">
+                        <FormControlLabel
+                          value="cod"
+                          control={<Radio />}
+                          label="Cash On Delivery"
+                        />
+                      </RadioGroup>
+                    </FormLabel>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Additional Order Notes"
+                    multiline
+                    id="additioalNotes"
+                    value={formik.values.additioalNotes}
+                    onChange={formik.handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    variant="outlined"
+                    className={classes.button}
+                    type="submit"
                   >
-                    <FormControlLabel
-                      value="cod"
-                      control={<Radio />}
-                      label="Cash On Delivery"
-                    />
-                    <FormControlLabel
-                      value="card"
-                      control={<Radio />}
-                      label="Credit or Debit Card"
-                    />
-                  </RadioGroup>
-                </FormLabel>
-              </FormControl>
-              <Grid item xs={12}>
-                <StripeCheckout
-                  name="Karachi Dairy Farm"
-                  token={onToken}
-                  amount={totalAmountState * 100}
-                  description={`Payment of amount Rs ${totalAmountState}`}
-                  stripeKey={STRIPE_KEY}
-                >
-                  <Button variant="outlined">Checkout</Button>
-                </StripeCheckout>
+                    Checkout
+                  </Button>
+                </Grid>
               </Grid>
             </Paper>
           </form>

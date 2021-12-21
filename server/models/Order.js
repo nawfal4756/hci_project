@@ -19,15 +19,6 @@ const OrderSchema = mongoose.Schema(
         price: { type: Number, require: true },
       },
     ],
-    addresses: [
-      {
-        street: { type: String, required: true },
-        area: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        country: { type: String, required: true },
-      },
-    ],
     subTotal: { type: Number, require: true },
     tax: { type: Number, require: true },
     total: { type: Number, require: true },
