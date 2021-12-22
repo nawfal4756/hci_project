@@ -16,7 +16,7 @@ const CustomerSchema = new mongoose.Schema(
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     totalPayable: { type: Number, default: 0 },
-    customerType: { type: String, required: true },
+    // customerType: { type: String, required: true },
     active: { type: Boolean, default: true },
     verification: { type: Boolean, default: true },
   },

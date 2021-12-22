@@ -37,33 +37,33 @@ export default function MenuBar() {
     { name: "Display All Cows", link: "/cows" },
     { name: "Add Cow", link: "/cows/add" },
     // { name: "Modify Cow Details", link: "/cows/search" },
-    { name: "Add Milk Produced", link: "/cows/milk/add" },
-    { name: "Milk Produced Log", link: "/cows/milk" },
+    // { name: "Add Milk Produced", link: "/cows/milk/add" },
+    // { name: "Milk Produced Log", link: "/cows/milk" },
   ];
-  const feedOptions = [
-    { name: "Display All Feeds", link: "/feeds" },
-    { name: "Add Feed Type", link: "/feeds/add" },
-    // { name: "Modify Feed Type Details", link: "/feeds" },
-    { name: "Feed Bought", link: "/feeds/add" },
-    { name: "Feed Given to Cow", link: "/feeds/given" },
-  ];
+  // const feedOptions = [
+  //   { name: "Display All Feeds", link: "/feeds" },
+  //   { name: "Add Feed Type", link: "/feeds/add" },
+  //   { name: "Modify Feed Type Details", link: "/feeds" },
+  //   { name: "Feed Bought", link: "/feeds/add" },
+  //   { name: "Feed Given to Cow", link: "/feeds/given" },
+  // ];
   const customerOptions = [
     { name: "Display All Customers", link: "/customers" },
     // { name: "View Customer Details", link: "/customers/search" },
   ];
   const employeeOptions = [
     { name: "Display All Employees", link: "/employees" },
-    { name: "Add new Employee", link: "/employees/add" },
+    // { name: "Add new Employee", link: "/employees/add" },
     // { name: "Modify Employee Details", link: "/employees/modify" },
   ];
-  const expenseOptions = [
-    { name: "Display All Expenses", link: "/expenses" },
-    { name: "Add new Expense", link: "/expenses/add" },
-    // { name: "Modify Expense Details", link: "/expenses/modify" },
-  ];
+  // const expenseOptions = [
+  //   { name: "Display All Expenses", link: "/expenses" },
+  //   { name: "Add new Expense", link: "/expenses/add" },
+  //   { name: "Modify Expense Details", link: "/expenses/modify" },
+  // ];
   const orderOptions = [
     { name: "Display All Orders", link: "/orders" },
-    { name: "Search Order", link: "/orders/search" },
+    // { name: "Search Order", link: "/orders/search" },
   ];
   const productOptions = [
     { name: "Display All Products", link: "/products" },
@@ -238,7 +238,7 @@ export default function MenuBar() {
               </AccordionDetails>
             </Accordion>
           ) : null}
-          {user.isAdmin || user.cowAccess || user.expenseAccess ? (
+          {/* {user.isAdmin || user.cowAccess || user.expenseAccess ? (
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -273,7 +273,7 @@ export default function MenuBar() {
                 </List>
               </AccordionDetails>
             </Accordion>
-          ) : null}
+          ) : null} */}
           {user.isAdmin || user.customerAccess ? (
             <Accordion>
               <AccordionSummary
@@ -346,7 +346,7 @@ export default function MenuBar() {
               </AccordionDetails>
             </Accordion>
           ) : null}
-          {user.isAdmin || user.expenseAccess ? (
+          {/* {user.isAdmin || user.expenseAccess ? (
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -381,7 +381,7 @@ export default function MenuBar() {
                 </List>
               </AccordionDetails>
             </Accordion>
-          ) : null}
+          ) : null} */}
           {user.isAdmin || user.orderAccess ? (
             <Accordion>
               <AccordionSummary

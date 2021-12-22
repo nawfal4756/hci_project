@@ -66,7 +66,6 @@ export default function Register() {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const options = ["Karachi", "Faisalabad", "Badin", "Lahore", "Hyderabad"];
   const states = ["Sindh", "Punjab", "Khyber Pakhtunkhwa", "Balochistan"];
   const [dob, setDob] = useState(new Date());
 
@@ -112,7 +111,7 @@ export default function Register() {
       username: "",
       password: "",
       rePassword: "",
-      customerType: "default",
+      // customerType: "default",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -200,22 +199,14 @@ export default function Register() {
                     />
                   </Grid>
                   <Grid item xs>
-                    <Autocomplete
+                    <TextField
                       id="city"
-                      options={options}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="City"
-                          variant="outlined"
-                          value={formik.values.city}
-                          onChange={formik.handleChange}
-                          error={
-                            formik.touched.city && Boolean(formik.errors.city)
-                          }
-                          helperText={formik.touched.city && formik.errors.city}
-                        />
-                      )}
+                      label="City"
+                      variant="outlined"
+                      value={formik.values.city}
+                      onChange={formik.handleChange}
+                      error={formik.touched.city && Boolean(formik.errors.city)}
+                      helperText={formik.touched.city && formik.errors.city}
                     />
                   </Grid>
                   <Grid item xs>
@@ -363,7 +354,7 @@ export default function Register() {
                       }
                     />
                   </Grid>
-                  <Grid item xs>
+                  {/* <Grid item xs>
                     <InputLabel htmlFor="customerType">
                       Customer Type
                     </InputLabel>
@@ -388,7 +379,7 @@ export default function Register() {
                           formik.errors.customerType}
                       </FormHelperText>
                     ) : null}
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={5}>
                     <Button variant="outlined" color="inherit" type="submit">
                       Register
