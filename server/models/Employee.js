@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
-const DateOnly = require("mongoose-dateonly")(mongoose);
 
 const EmployeeSchema = new mongoose.Schema(
   {
     gender: { type: String, required: true },
-    dateOfBirth: { type: DateOnly, required: true },
+    dateOfBirth: { type: Date, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     street: { type: String, required: true },
@@ -23,7 +22,7 @@ const EmployeeSchema = new mongoose.Schema(
     orderAccess: { type: Boolean, default: false },
     productAccess: { type: Boolean, default: false },
     expenseAccess: { type: Boolean, default: false },
-    activeStatus: { type: Boolean, default: true },
+    active: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

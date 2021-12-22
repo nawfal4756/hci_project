@@ -68,7 +68,7 @@ router.post("/login", async (req, res) => {
     const employee = await Employee.findOne({ username: req.body.username });
     if (!employee) {
       return res.status(401).json("No user is registered with this username!");
-    } else if (!employee.activeStatus) {
+    } else if (!employee.active) {
       return res
         .status(401)
         .json("Account is not activated by the administrator");
@@ -90,6 +90,7 @@ router.post("/login", async (req, res) => {
         orderAccess: employee.orderAccess,
         productAccess: employee.productAccess,
         expenseAccess: employee.expenseAccess,
+        active: employee.active,
       },
       process.env.JWT_SEC,
       { expiresIn: "3d" }

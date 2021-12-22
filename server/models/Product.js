@@ -8,6 +8,7 @@ const ProductScheme = mongoose.Schema(
     price: { type: Number, require: true },
     productImage: { type: String, require: true },
     available: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

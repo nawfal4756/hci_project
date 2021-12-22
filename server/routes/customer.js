@@ -83,7 +83,7 @@ router.put("/verification/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // Get All Accounts
-router.get("/all", verifyTokenAndAdmin, async (req, res) => {
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
   try {
     const customers = await Promise.all(
       (
@@ -93,6 +93,7 @@ router.get("/all", verifyTokenAndAdmin, async (req, res) => {
         return others;
       })
     );
+
     res.status(200).json(customers);
   } catch (err) {
     res.status(500).json(err);
@@ -119,6 +120,35 @@ router.get(
       const customer = await Customer.findById(req.params.customerId);
       const { password, ...others } = customer._doc;
       res.status(200).json(others);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+);
+
+// Block An Account
+router.put(
+  "/blocked/:customerId",
+  verifyTokenAndCustomerAccess,
+  async (req, res) => {
+    let value = false;
+    try {
+      const customer = await Customer.findById(req.params.customerId);
+
+      if (customer.active) {
+        value = false;
+      } else {
+        value = true;
+      }
+
+      const savedCustomer = await Customer.findByIdAndUpdate(
+        req.params.customerId,
+        {
+          $set: { active: value },
+        },
+        { new: true }
+      );
+      res.status(200).json(savedCustomer);
     } catch (err) {
       res.status(500).json(err);
     }

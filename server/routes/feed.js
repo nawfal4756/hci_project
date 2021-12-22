@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const Feed = require("../models/Feed");
+const FeedGiven = require("../models/FeedGiven");
+const Expense = require("../models/Expense");
 const { verifyTokenAndFeedAccess } = require("./verifyTokenEmployee");
 
 // Create
@@ -14,11 +16,43 @@ router.post("/", verifyTokenAndFeedAccess, async (req, res) => {
   }
 });
 
+//Update
+router.put("/:id", verifyTokenAndFeedAccess, async (req, res) => {
+  try {
+    const updatedFeed = await Feed.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedFeed);
+  } catch (err) {
+    res.status(500).json(res);
+  }
+});
+
+// Delete
+router.delete("/:id", verifyTokenAndFeedAccess, async (req, res) => {
+  try {
+    await Feed.findByIdAndDelete(req.params.id);
+    res.status(200).json("Feed has been deleted!");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // Use
 router.put("/use/:id", verifyTokenAndFeedAccess, async (req, res) => {
   try {
     const feed = await Feed.findById(req.params.id);
     feed.quantityAvailable -= req.body.quantity;
+    const newFeedGiven = new FeedGiven({
+      cowId: req.body.cowId,
+      feedId: req.params.id,
+      quantity: req.body.quantity,
+    });
+    const savedFeedGiven = await newFeedGiven.save();
     const updatedFeed = await feed.save();
     res.status(200).json(updatedFeed);
   } catch (err) {
@@ -26,11 +60,20 @@ router.put("/use/:id", verifyTokenAndFeedAccess, async (req, res) => {
   }
 });
 
-// Buy
-router.put("/buy/:id", verifyTokenAndFeedAccess, async (req, res) => {
+// Add
+router.put("/add/:id", verifyTokenAndFeedAccess, async (req, res) => {
   try {
     const feed = await Feed.findById(req.params.id);
     feed.quantityAvailable += req.body.quantity;
+    const newExpense = new Expense({
+      title: feed.name,
+      description: "Feed Bought",
+      date: new Date(),
+      subAmount: req.body.unitPrice * req.body.quantity,
+    });
+    newExpense.tax = newExpense.subAmount * 0.13;
+    newExpense.totalAmount = newExpense.tax + newExpense.subAmount;
+    const savedExpense = await newExpense.save();
     const updatedFeed = await feed.save();
     res.status(200).json(updatedFeed);
   } catch (err) {

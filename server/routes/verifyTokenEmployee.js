@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
         if (err) {
           res.status(403).json("Token is not valid!");
         }
-        if (employee.activeStatus) {
+        if (!employee.active) {
           return res
             .status(401)
             .json("Your account is not actived! Kindly contact administartor!");

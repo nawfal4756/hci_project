@@ -102,6 +102,26 @@ router.put(
   }
 );
 
+// Delete
+router.put(
+  "/delete/:productId",
+  verifyTokenAndProductAccess,
+  async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.productId);
+      product.active = !product.active;
+      const savedProduct = await Product.findByIdAndUpdate(
+        req.params.productId,
+        { $set: product },
+        { new: true }
+      );
+      res.status(200).json(savedProduct);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+);
+
 // Get Total Price
 router.post(
   "/totalprice/:id",
@@ -128,11 +148,22 @@ router.post(
   }
 );
 
+// Get All Products Employee
+router.get("/employee", verifyTokenAndProductAccess, async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // Get All Products
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find();
-    res.status(200).json(products);
+    const filteredProducts = products.filter((item) => item.active === true);
+    res.status(200).json(filteredProducts);
   } catch (err) {
     res.status(500).json(err);
   }

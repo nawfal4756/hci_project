@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const CowSchema = mongoose.Schema(
   {
-    gender: { type: String, require: true },
+    cowId: { type: String, require: true },
     dateOfBirth: { type: Date, require: true },
     weight: { type: Number, require: true },
     breed: { type: String, require: true },

@@ -14,6 +14,7 @@ const cartRoute = require("./routes/cart");
 const expenseRoute = require("./routes/expense");
 const feedRoute = require("./routes/feed");
 const orderRoute = require("./routes/order");
+const cowRoute = require("./routes/cow");
 const stripeRoute = require("./routes/stripe");
 
 const app = express();
@@ -43,6 +44,7 @@ app.use("/api/carts", cartRoute);
 app.use("/api/expenses", expenseRoute);
 app.use("/api/feeds", feedRoute);
 app.use("/api/orders", orderRoute);
+app.use("/api/cows", cowRoute);
 app.use("/api/checkout", stripeRoute);
 app.get("/api", (req, res) => {
   res.status(200).send("<h1>Hello Yaar! Under Construction!!!</h1>");
