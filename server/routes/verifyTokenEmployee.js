@@ -10,11 +10,6 @@ const verifyToken = (req, res, next) => {
           console.log(err);
           return res.status(403).json("Token is not valid!");
         }
-        if (!employee.active) {
-          return res
-            .status(401)
-            .json("Your account is not actived! Kindly contact administartor!");
-        }
         req.employee = employee;
         next();
       });
