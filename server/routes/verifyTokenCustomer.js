@@ -5,16 +5,14 @@ const verifyToken = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     try {
-      const customer = jwt.verify(token, process.env.JWT_SEC);
-      req.customer = customer;
-      next();
-      // jwt.verify(token, process.env.JWT_SEC, (err, customer) => {
-      //   if (err) {
-      //     return res.status(403).json("Token is not valid!");
-      //   }
-      //   req.customer = customer;
-      //   next();
-      // });
+      jwt.verify(token, process.env.JWT_SEC, (err, customer) => {
+        if (err) {
+          console.log(err);
+          return res.status(403).json("Token is not valid!");
+        }
+        req.customer = customer;
+        next();
+      });
     } catch (err) {
       return res
         .status(401)
