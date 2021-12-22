@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
         active: employee.active,
       },
       process.env.JWT_SEC,
-      { expiresIn: "3d" }
+      { expiresIn: "1h" }
     );
 
     const { password, ...others } = employee._doc;
