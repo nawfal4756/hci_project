@@ -27,6 +27,9 @@ import ProductOutlet from "./components/Product/ProductOutlet";
 import Product from "./components/Product/Product";
 import AddCow from "./components/Cow/AddCow";
 import ModifyCow from "./components/Cow/ModifyCow";
+import AddProduct from "./components/Product/AddProduct";
+import ModifyProduct from "./components/Product/ModifyProduct";
+import AddMilkProduced from "./components/Cow/AddMilkProduced";
 
 function App() {
   const user = useSelector((state) => state.user.loggedIn);
@@ -59,6 +62,10 @@ function App() {
             <Route
               path=":id"
               element={user ? <ModifyCow /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="milk/add"
+              element={user ? <AddMilkProduced /> : <Navigate to="/login" />}
             />
           </Route>
           <Route
@@ -113,6 +120,14 @@ function App() {
             <Route
               path=""
               element={user ? <Product /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="add"
+              element={user ? <AddProduct /> : <Navigate to="/login" />}
+            />
+            <Route
+              path=":id"
+              element={user ? <ModifyProduct /> : <Navigate to="/login" />}
             />
           </Route>
         </Routes>

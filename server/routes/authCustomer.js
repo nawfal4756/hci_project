@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
     if (!customer) {
       return res.status(401).json("No user is registered with this username!");
     }
-    if (customer.active) {
+    if (!customer.active) {
       return res
         .status(401)
         .json("Your account is deactivated! Kindly contact company.");

@@ -43,7 +43,7 @@ export default function MenuBar() {
   const feedOptions = [
     { name: "Display All Feeds", link: "/feeds" },
     { name: "Add Feed Type", link: "/feeds/add" },
-    { name: "Modify Feed Type Details", link: "/feeds/search" },
+    // { name: "Modify Feed Type Details", link: "/feeds" },
     { name: "Feed Bought", link: "/feeds/add" },
     { name: "Feed Given to Cow", link: "/feeds/given" },
   ];
@@ -54,12 +54,12 @@ export default function MenuBar() {
   const employeeOptions = [
     { name: "Display All Employees", link: "/employees" },
     { name: "Add new Employee", link: "/employees/add" },
-    { name: "Modify Employee Details", link: "/employees/modify" },
+    // { name: "Modify Employee Details", link: "/employees/modify" },
   ];
   const expenseOptions = [
     { name: "Display All Expenses", link: "/expenses" },
     { name: "Add new Expense", link: "/expenses/add" },
-    { name: "Modify Expense Details", link: "/expenses/modify" },
+    // { name: "Modify Expense Details", link: "/expenses/modify" },
   ];
   const orderOptions = [
     { name: "Display All Orders", link: "/orders" },
@@ -68,7 +68,7 @@ export default function MenuBar() {
   const productOptions = [
     { name: "Display All Products", link: "/products" },
     { name: "Add new product", link: "/products/add" },
-    { name: "Modify Product Details", link: "/products/search" },
+    // { name: "Modify Product Details", link: "/products/search" },
   ];
 
   const [drawerState, setDrawerState] = useState(false);
@@ -117,7 +117,7 @@ export default function MenuBar() {
               </Grid>
               <Grid item xs={10}>
                 <Typography variant="h5" className={classes.heading}>
-                  Emploee Panel Karachi Dairy Farm
+                  Employee Panel Karachi Dairy Farm
                 </Typography>
               </Grid>
               <Grid
