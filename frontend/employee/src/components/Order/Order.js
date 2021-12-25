@@ -13,9 +13,12 @@ import {
   Paper,
   Tooltip,
 } from "@material-ui/core";
-import { DeleteOutlined, VisibilityOutlined } from "@material-ui/icons";
+import {
+  DeleteOutlined,
+  // VisibilityOutlined
+} from "@material-ui/icons";
 import { useStyles } from "./Order.styles";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { employeeRequest } from "../../requestMethods";
 import { useDispatch } from "react-redux";
 import { openSnackBar } from "../../redux/snackBarRedux";
@@ -25,12 +28,12 @@ export default function Order() {
   const [data, setData] = useState([]);
   const [blockItem, setBlockItem] = useState(null);
   const classes = useStyles();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleEditFuntion = (orderId) => {
-    navigate(`/orders/${orderId}`);
-  };
+  // const handleEditFuntion = (orderId) => {
+  //   navigate(`/orders/${orderId}`);
+  // };
 
   const handleBlockFuntion = async (orderId) => {
     try {
@@ -131,7 +134,7 @@ export default function Order() {
                           <TableCell align="center">{item.total}</TableCell>
                           <TableCell align="center">{item.status}</TableCell>
                           <TableCell align="center">
-                            <Tooltip title="Show">
+                            {/* <Tooltip title="Show">
                               <Button
                                 onClick={() => {
                                   handleEditFuntion(item._id);
@@ -139,7 +142,7 @@ export default function Order() {
                               >
                                 <VisibilityOutlined />
                               </Button>
-                            </Tooltip>
+                            </Tooltip> */}
                             <Tooltip title="Delete">
                               <Button
                                 onClick={() => {

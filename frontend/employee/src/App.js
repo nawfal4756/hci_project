@@ -30,9 +30,15 @@ import ModifyCow from "./components/Cow/ModifyCow";
 import AddProduct from "./components/Product/AddProduct";
 import ModifyProduct from "./components/Product/ModifyProduct";
 import AddMilkProduced from "./components/Cow/AddMilkProduced";
+import AddEmployee from "./components/Employee/AddEmployee";
 
 function App() {
   const user = useSelector((state) => state.user.loggedIn);
+  const accessToken = useSelector(
+    (state) => state.user.currentUser?.accessToken
+  );
+  console.log(accessToken);
+
   return (
     <div>
       <Router>
@@ -84,6 +90,10 @@ function App() {
             <Route
               path=""
               element={user ? <Employee /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="add"
+              element={user ? <AddEmployee /> : <Navigate to="/login" />}
             />
           </Route>
           <Route

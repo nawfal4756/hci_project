@@ -28,7 +28,7 @@ export default function Login() {
           })
         );
       } catch (err) {
-        if (typeof typeof err.response.data === "string") {
+        if (typeof err.response.data === "string") {
           dispatch(
             openSnackBar({ message: err.response.data, severity: "error" })
           );

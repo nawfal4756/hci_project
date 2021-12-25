@@ -231,7 +231,7 @@ export default function ModifyCow() {
                           fullWidth
                           className={classes.button}
                         >
-                          Add Cow
+                          Update Cow
                         </Button>
                       </Grid>
                     </div>
