@@ -7,6 +7,7 @@ import {
   InputLabel,
   Button,
   FormHelperText,
+  CircularProgress,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import {
@@ -68,10 +69,12 @@ export default function Register() {
   const dispatch = useDispatch();
   const states = ["Sindh", "Punjab", "Khyber Pakhtunkhwa", "Balochistan"];
   const [dob, setDob] = useState(new Date());
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values) => {
     const { rePassword, ...others } = values;
     try {
+      setLoading(true);
       const res = await publicRequest.post("/authCustomers/register", others);
       navigate("/login", { replace: true });
       dispatch(
@@ -80,7 +83,9 @@ export default function Register() {
           severity: "success",
         })
       );
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       if (typeof err.response.data === "string") {
         dispatch(
           openSnackBar({ message: err.response.data, severity: "error" })
@@ -140,221 +145,235 @@ export default function Register() {
           </Typography>
         </Grid>
         <Grid item xs>
-          <Paper elevation={5} variant="outlined" className={classes.paper}>
-            <div className={classes.div}>
-              <form onSubmit={formik.handleSubmit}>
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="center"
-                  direction="column"
-                >
-                  <Grid item xs>
-                    <TextField
-                      id="name"
-                      label="Full Name"
-                      variant="outlined"
-                      value={formik.values.name}
-                      onChange={formik.handleChange}
-                      error={formik.touched.name && Boolean(formik.errors.name)}
-                      helperText={formik.touched.name && formik.errors.name}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="email"
-                      label="Email"
-                      type="email"
-                      variant="outlined"
-                      value={formik.values.email}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.email && Boolean(formik.errors.email)
-                      }
-                      helperText={formik.touched.email && formik.errors.email}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="street"
-                      label="Street"
-                      variant="outlined"
-                      value={formik.values.street}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.street && Boolean(formik.errors.street)
-                      }
-                      helperText={formik.touched.street && formik.errors.street}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="area"
-                      label="Area"
-                      variant="outlined"
-                      value={formik.values.area}
-                      onChange={formik.handleChange}
-                      error={formik.touched.area && Boolean(formik.errors.area)}
-                      helperText={formik.touched.area && formik.errors.area}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="city"
-                      label="City"
-                      variant="outlined"
-                      value={formik.values.city}
-                      onChange={formik.handleChange}
-                      error={formik.touched.city && Boolean(formik.errors.city)}
-                      helperText={formik.touched.city && formik.errors.city}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <Autocomplete
-                      id="state"
-                      options={states}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="State"
-                          variant="outlined"
-                          value={formik.values.state}
-                          onChange={formik.handleChange}
-                          error={
-                            formik.touched.state && Boolean(formik.errors.state)
-                          }
-                          helperText={
-                            formik.touched.state && formik.errors.state
-                          }
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="country"
-                      label="Country"
-                      variant="outlined"
-                      InputProps={{ readOnly: true }}
-                      value={formik.values.country}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.country && Boolean(formik.errors.country)
-                      }
-                      helperText={
-                        formik.touched.country && formik.errors.country
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="phone"
-                      label="Contact Number"
-                      variant="outlined"
-                      placeholder="03xxxxxxxxx"
-                      value={formik.values.phone}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.phone && Boolean(formik.errors.phone)
-                      }
-                      helperText={formik.touched.phone && formik.errors.phone}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <InputLabel htmlFor="gender">Gender</InputLabel>
-                    <Select
-                      native
-                      variant="outlined"
-                      labelId="gender"
-                      id="gender"
-                      value={formik.values.gender}
-                      onChange={formik.handleChange}
-                    >
-                      <option value="default" disabled>
-                        Select
-                      </option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </Select>
-                    {formik.touched.gender && Boolean(formik.errors.gender) ? (
-                      <FormHelperText>
-                        {formik.touched.gender && formik.errors.gender}
-                      </FormHelperText>
-                    ) : null}
-                  </Grid>
-                  <Grid item xs>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <KeyboardDatePicker
-                        id="dateOfBirth"
-                        label="Date of Birth"
-                        format="MM/dd/yyyy"
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Paper elevation={5} variant="outlined" className={classes.paper}>
+              <div className={classes.div}>
+                <form onSubmit={formik.handleSubmit}>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    direction="column"
+                  >
+                    <Grid item xs>
+                      <TextField
+                        id="name"
+                        label="Full Name"
                         variant="outlined"
-                        value={formik.values.dateOfBirth}
-                        onChange={handleDOBChange}
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
                         error={
-                          formik.touched.dateOfBirth &&
-                          Boolean(formik.errors.dateOfBirth)
+                          formik.touched.name && Boolean(formik.errors.name)
+                        }
+                        helperText={formik.touched.name && formik.errors.name}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="email"
+                        label="Email"
+                        type="email"
+                        variant="outlined"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.email && Boolean(formik.errors.email)
+                        }
+                        helperText={formik.touched.email && formik.errors.email}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="street"
+                        label="Street"
+                        variant="outlined"
+                        value={formik.values.street}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.street && Boolean(formik.errors.street)
                         }
                         helperText={
-                          formik.touched.dateOfBirth &&
-                          formik.errors.dateOfBirth
+                          formik.touched.street && formik.errors.street
                         }
-                        disableFuture
                       />
-                    </MuiPickersUtilsProvider>
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="username"
-                      label="Username"
-                      variant="outlined"
-                      value={formik.values.username}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.username &&
-                        Boolean(formik.errors.username)
-                      }
-                      helperText={
-                        formik.touched.username && formik.errors.username
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="password"
-                      label="Password"
-                      type="password"
-                      variant="outlined"
-                      value={formik.values.password}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.password &&
-                        Boolean(formik.errors.password)
-                      }
-                      helperText={
-                        formik.touched.password && formik.errors.password
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <TextField
-                      id="rePassword"
-                      label="Re-Enter Password"
-                      type="password"
-                      variant="outlined"
-                      value={formik.values.rePassword}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.rePassword &&
-                        Boolean(formik.errors.rePassword)
-                      }
-                      helperText={
-                        formik.touched.rePassword && formik.errors.rePassword
-                      }
-                    />
-                  </Grid>
-                  {/* <Grid item xs>
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="area"
+                        label="Area"
+                        variant="outlined"
+                        value={formik.values.area}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.area && Boolean(formik.errors.area)
+                        }
+                        helperText={formik.touched.area && formik.errors.area}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="city"
+                        label="City"
+                        variant="outlined"
+                        value={formik.values.city}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.city && Boolean(formik.errors.city)
+                        }
+                        helperText={formik.touched.city && formik.errors.city}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <Autocomplete
+                        id="state"
+                        options={states}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="State"
+                            variant="outlined"
+                            value={formik.values.state}
+                            onChange={formik.handleChange}
+                            error={
+                              formik.touched.state &&
+                              Boolean(formik.errors.state)
+                            }
+                            helperText={
+                              formik.touched.state && formik.errors.state
+                            }
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="country"
+                        label="Country"
+                        variant="outlined"
+                        InputProps={{ readOnly: true }}
+                        value={formik.values.country}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.country &&
+                          Boolean(formik.errors.country)
+                        }
+                        helperText={
+                          formik.touched.country && formik.errors.country
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="phone"
+                        label="Contact Number"
+                        variant="outlined"
+                        placeholder="03xxxxxxxxx"
+                        value={formik.values.phone}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.phone && Boolean(formik.errors.phone)
+                        }
+                        helperText={formik.touched.phone && formik.errors.phone}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <InputLabel htmlFor="gender">Gender</InputLabel>
+                      <Select
+                        native
+                        variant="outlined"
+                        labelId="gender"
+                        id="gender"
+                        value={formik.values.gender}
+                        onChange={formik.handleChange}
+                      >
+                        <option value="default" disabled>
+                          Select
+                        </option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </Select>
+                      {formik.touched.gender &&
+                      Boolean(formik.errors.gender) ? (
+                        <FormHelperText>
+                          {formik.touched.gender && formik.errors.gender}
+                        </FormHelperText>
+                      ) : null}
+                    </Grid>
+                    <Grid item xs>
+                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                          id="dateOfBirth"
+                          label="Date of Birth"
+                          format="MM/dd/yyyy"
+                          variant="outlined"
+                          value={formik.values.dateOfBirth}
+                          onChange={handleDOBChange}
+                          error={
+                            formik.touched.dateOfBirth &&
+                            Boolean(formik.errors.dateOfBirth)
+                          }
+                          helperText={
+                            formik.touched.dateOfBirth &&
+                            formik.errors.dateOfBirth
+                          }
+                          disableFuture
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="username"
+                        label="Username"
+                        variant="outlined"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.username &&
+                          Boolean(formik.errors.username)
+                        }
+                        helperText={
+                          formik.touched.username && formik.errors.username
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="password"
+                        label="Password"
+                        type="password"
+                        variant="outlined"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.password &&
+                          Boolean(formik.errors.password)
+                        }
+                        helperText={
+                          formik.touched.password && formik.errors.password
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <TextField
+                        id="rePassword"
+                        label="Re-Enter Password"
+                        type="password"
+                        variant="outlined"
+                        value={formik.values.rePassword}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.rePassword &&
+                          Boolean(formik.errors.rePassword)
+                        }
+                        helperText={
+                          formik.touched.rePassword && formik.errors.rePassword
+                        }
+                      />
+                    </Grid>
+                    {/* <Grid item xs>
                     <InputLabel htmlFor="customerType">
                       Customer Type
                     </InputLabel>
@@ -380,30 +399,31 @@ export default function Register() {
                       </FormHelperText>
                     ) : null}
                   </Grid> */}
-                  <Grid item xs={5}>
-                    <Button variant="outlined" color="inherit" type="submit">
-                      Register
-                    </Button>
+                    <Grid item xs={5}>
+                      <Button variant="outlined" color="inherit" type="submit">
+                        Register
+                      </Button>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        onClick={formik.handleReset}
+                      >
+                        Reset
+                      </Button>
+                    </Grid>
+                    <Grid item xs>
+                      <Typography align="center">
+                        Already have an account?{" "}
+                        <Link to="/login">Log In Here!</Link>
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={5}>
-                    <Button
-                      variant="outlined"
-                      color="inherit"
-                      onClick={formik.handleReset}
-                    >
-                      Reset
-                    </Button>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography align="center">
-                      Already have an account?{" "}
-                      <Link to="/login">Log In Here!</Link>
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </form>
-            </div>
-          </Paper>
+                </form>
+              </div>
+            </Paper>
+          )}
         </Grid>
       </Grid>
     </div>
