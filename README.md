@@ -1,5 +1,14 @@
 # Karachi Dairy Farm
 
+## Installation
+
+1. Go to customer folder in frontend and run **npm install**
+2. Go to employee folder in frontend and run **npm install**
+3. Go to server folder run **npm install**
+4. To start server open first command line and navigate to server foler and run **npm start**
+5. To run employee panel open another command line and navigate to employee foler inside frontend folder and run **npm start**
+6. To run customer panel open another command line and navigate to customer foler inside frontend folder and run **npm start**
+
 ## Customer Login
 
 username: nawfal4756
