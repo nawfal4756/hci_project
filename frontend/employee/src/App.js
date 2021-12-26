@@ -34,10 +34,6 @@ import AddEmployee from "./components/Employee/AddEmployee";
 
 function App() {
   const user = useSelector((state) => state.user.loggedIn);
-  const accessToken = useSelector(
-    (state) => state.user.currentUser?.accessToken
-  );
-  console.log(accessToken);
 
   return (
     <div>

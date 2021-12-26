@@ -144,10 +144,12 @@ export default function Register() {
             Register
           </Typography>
         </Grid>
-        <Grid item xs>
-          {loading ? (
+        {loading ? (
+          <Grid item xs={12}>
             <CircularProgress />
-          ) : (
+          </Grid>
+        ) : (
+          <Grid item xs>
             <Paper elevation={5} variant="outlined" className={classes.paper}>
               <div className={classes.div}>
                 <form onSubmit={formik.handleSubmit}>
@@ -423,8 +425,8 @@ export default function Register() {
                 </form>
               </div>
             </Paper>
-          )}
-        </Grid>
+          </Grid>
+        )}
       </Grid>
     </div>
   );

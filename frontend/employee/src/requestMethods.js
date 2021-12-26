@@ -30,10 +30,9 @@ export const publicRequest = axios.create({
 });
 
 export const employeeRequest = axios.create({
-  baseURL: BASE_URL,
-  headers: { token: `Bearer ${TOKEN}` },
   transformRequest: async (_data, headers) => {
     await setHeader(headers);
-    return headers;
   },
+  baseURL: BASE_URL,
+  headers: { token: `Bearer ${TOKEN}` },
 });

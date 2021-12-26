@@ -106,7 +106,9 @@ export default function Order() {
           </Typography>
         </Grid>
         {loading ? (
-          <CircularProgress />
+          <Grid item xs={12}>
+            <CircularProgress />
+          </Grid>
         ) : (
           <Grid item xs={12}>
             {data.length > 0 ? (
